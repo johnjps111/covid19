@@ -19,7 +19,7 @@ county_data$fips <- paste(county_data$STATE,county_data$COUNTY,sep="")
 county_data <- select(county_data, fips, STNAME, CTYNAME, POPESTIMATE2019, DEATHS2019)
 
 covid_detail <- inner_join(covid_data, county_data, by = "fips")
-covid_detail$covid_case_pct <- 100 *covid_detail$cases / covid_detail$POPESTIMATE2019
+covid_detail$covid_case_pct <- 100 * covid_detail$cases / covid_detail$POPESTIMATE2019
 covid_detail$covid_death_pct <- 100 * covid_detail$deaths / covid_detail$POPESTIMATE2019
 covid_detail$fipsc <- covid_detail$fips
 covid_detail$fips <- NULL
@@ -82,9 +82,9 @@ for (plot_date in plot_dates)
 
     mapCases.df.current <- subset(mapCases.df,pdate == plot_date)
 
-    jpeg(filename = paste("./plots/cases/img_cases_",gsub("-","_",plot_date),".jpg",sep=""),width = 1200, height = 800 )
+    jpeg(filename = paste("./plots/cases/img_cases_",gsub("-","_",plot_date),".jpg",sep=""), width = 1200, height = 800 )
     pc <- ggplot(mapCases.df.current, aes(x=long, y=lat, group=group, fill=cases)) +
-      scale_fill_gradientn("", colours=pcolors, na.value = "white", limits = c(0,15000) ) +
+      scale_fill_gradientn("", colours=pcolors, na.value = "white", limits = c(0.000000001,15000) ) +
       labs(title=paste("Covid 19 Cases by County (",plot_date,")",sep = ""), x="",y="")+
       geom_polygon() + coord_map() + borders("state")
     print(pc)
@@ -102,9 +102,9 @@ for (plot_date in plot_dates)
 
     mapDeaths.df.current <- subset(mapDeaths.df,pdate == plot_date)
 
-    jpeg(filename = paste("./plots/deaths/img_deaths_",gsub("-","_",plot_date),".jpg",sep=""),width = 1200, height = 800 )
+    jpeg(filename = paste("./plots/deaths/img_deaths_",gsub("-","_",plot_date),".jpg",sep=""), width = 1200, height = 800 )
     pc <- ggplot(mapDeaths.df.current, aes(x=long, y=lat, group=group, fill=deaths)) +
-      scale_fill_gradientn("",colours=pcolors ,na.value = "white", limits = c(0,500) ) +
+      scale_fill_gradientn("",colours=pcolors ,na.value = "white", limits = c(0.000000001,500) ) +
       labs(title=paste("Covid 19 Deaths by County (",plot_date,")",sep = ""), x="",y="")+
       geom_polygon() + coord_map() + borders("state")
     print(pc)
@@ -122,9 +122,9 @@ for (plot_date in plot_dates)
 
     mapCases.df.current <- subset(mapCases.df,pdate == plot_date)
 
-    jpeg(filename = paste("./plots/case_pcts/img_cases_",gsub("-","_",plot_date),".jpg",sep=""),width = 1200, height = 800 )
+    jpeg(filename = paste("./plots/case_pcts/img_cases_",gsub("-","_",plot_date),".jpg",sep=""), width = 1200, height = 800 )
     pc <- ggplot(mapCases.df.current, aes(x=long, y=lat, group=group, fill=covid_case_pct)) +
-      scale_fill_gradientn("",colours=pcolors ,na.value = "white", limits = c(0,2) ) +
+      scale_fill_gradientn("",colours=pcolors ,na.value = "white", limits = c(0.000000001,2) ) +
       labs(title=paste("Covid 19 Cases by County as Pct of County Population (",plot_date,")",sep = ""), x="",y="")+
       geom_polygon() + coord_map() + borders("state")
     print(pc)
@@ -144,7 +144,7 @@ for (plot_date in plot_dates)
     
     jpeg(filename = paste("./plots/death_pcts/img_deaths_",gsub("-","_",plot_date),".jpg",sep=""),width = 1200, height = 800 )
     pc <- ggplot(mapDeaths.df.current, aes(x=long, y=lat, group=group, fill=covid_death_pct)) +
-      scale_fill_gradientn("",colours=pcolors ,na.value = "white", limits = c(0,0.03) ) +
+      scale_fill_gradientn("",colours=pcolors ,na.value = "white", limits = c(0.000000001,0.03) ) +
       labs(title=paste("Covid 19 Deaths by County as Pct of County Population (",plot_date,")",sep = ""), x="",y="")+
       geom_polygon() + coord_map() + borders("state")
     print(pc)
