@@ -1,6 +1,6 @@
 # covid19
 
-**AnimateGIF**
+**AnimatedGIF**
 
  - Generate a sequence of plots by day
  - Utilzing these plots, generate an animated GIF

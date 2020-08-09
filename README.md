@@ -2,7 +2,7 @@
 
 Analysis of Covid-19 data
 
-**AnimateGIF**
+**AnimatedGIF**
 
  - Generate a sequence of plots by day
  - Utilzing these plots, generate an animated GIF
