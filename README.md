@@ -1,8 +1,13 @@
 # covid19
-Plots of Covid-19 data
 
-us-counties.csv: snapshot of https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv (as of timestamp on local file)
+Analysis Covid-19 data
 
-county_plots.R: generates daily plots based on us-counties.csv
+**AnimateGIF**
 
-gen_animation.R: generates an animated gif based on all the daily images
+ - Generate a sequence of plots by day
+ - Utilzing these plots, generate an animated GIF
+
+**InteractiveMap**
+
+ - Display a map of US with Covid-19 information by county
+ - Clicking on a state/county will display into information about the state/county
