@@ -10,6 +10,9 @@ library(maps)       # required for map_data
 library(mapproj)    # required for maps
 library(usmap)
 
+# output file location - put this outside of the project; don't want to track generated stuff in the project
+outloc = "C:/dev/covidOutput"
+
 # County COVID data: 
 # writeup: https://github.com/nytimes/covid-19-data
 # data...: https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv
@@ -70,14 +73,33 @@ plot_dates <- sort(unique(US_county_detail$cdate))
 
 for (plot_date in plot_dates)
 {
-  cases_filename = paste("./plots/cases/img_cases_",gsub("-","_",plot_date),".jpg",sep="")
-  deaths_filename = paste("./plots/deaths/img_deaths_",gsub("-","_",plot_date),".jpg",sep="")
-  case_pcts_filename = paste("./plots/case_pcts/img_cases_",gsub("-","_",plot_date),".jpg",sep="")
-  death_pcts_filename = paste("./plots/death_pcts/img_deaths_",gsub("-","_",plot_date),".jpg",sep="")
-  
   US_county_detail_current = subset(US_county_detail, pdate == plot_date)
+
+  # plot death pcts
+  death_pcts_filename = paste(outloc,"/plots/death_pcts/img_deaths_",gsub("-","_",plot_date),".jpg",sep="")
+  if (!file.exists(death_pcts_filename))
+  {
+    upper_limit = 0.1
+    mapDeathPcts.df <- data.table(fortify(US_counties))
+    setkey(mapDeathPcts.df,id)
+    US_county_detail_current[US_county_detail_current$covid_death_pct > upper_limit,]$covid_death_pct = upper_limit
+    mapDeathPcts.df[US_county_detail_current,covid_death_pct:=covid_death_pct]
+    mapDeathPcts.df[US_county_detail_current,pdate:=pdate]
+    setkey(mapDeathPcts.df,id)
+    
+    mapDeathPcts.df.current <- subset(mapDeathPcts.df,pdate == plot_date)
+    
+    jpeg(filename = death_pcts_filename,width = 1200, height = 800 )
+    pc <- ggplot(mapDeathPcts.df.current, aes(x=long, y=lat, group=group, fill=covid_death_pct)) +
+      scale_fill_gradientn("", colours=pcolors ,na.value = "white", limits = c(0.000000001,upper_limit) ) +
+      labs(title=paste("Covid 19 Deaths by County as Pct of County Population (",plot_date,")",sep = ""), x="",y="") +
+      geom_polygon() + coord_map() + borders("state")
+    print(pc)
+    dev.off()
+  }
   
   # # plot cases
+  # cases_filename = paste(outloc,"/plots/cases/img_cases_",gsub("-","_",plot_date),".jpg",sep="")
   # if (!file.exists(cases_filename))
   # {
   #   mapCases.df <- data.table(fortify(US_counties))
@@ -99,6 +121,7 @@ for (plot_date in plot_dates)
   # }
   # 
   # plot deaths
+  # deaths_filename = paste(outloc,"/plots/deaths/img_deaths_",gsub("-","_",plot_date),".jpg",sep="")
   # if (!file.exists(deaths_filename))
   # {
   #   mapDeaths.df <- data.table(fortify(US_counties))
@@ -120,6 +143,7 @@ for (plot_date in plot_dates)
   # }
   # 
   # # plot case pcts
+  # case_pcts_filename = paste(outloc,"/plots/case_pcts/img_cases_",gsub("-","_",plot_date),".jpg",sep="")
   # if (!file.exists(case_pcts_filename))
   # {
   #   mapCasePcts.df <- data.table(fortify(US_counties))
@@ -139,28 +163,4 @@ for (plot_date in plot_dates)
   #   mapCasePcts.df.current <- NULL
   #   mapCasePcts.df <- NULL
   # }
-  
-  # plot death pcts
-  if (!file.exists(death_pcts_filename))
-  {
-    upper_limit = 0.1
-    mapDeathPcts.df <- data.table(fortify(US_counties))
-    setkey(mapDeathPcts.df,id)
-    US_county_detail_current[US_county_detail_current$covid_death_pct > upper_limit,]$covid_death_pct = upper_limit
-    mapDeathPcts.df[US_county_detail_current,covid_death_pct:=covid_death_pct]
-    mapDeathPcts.df[US_county_detail_current,pdate:=pdate]
-    setkey(mapDeathPcts.df,id)
-    
-    mapDeathPcts.df.current <- subset(mapDeathPcts.df,pdate == plot_date)
-    
-    jpeg(filename = death_pcts_filename,width = 1200, height = 800 )
-    pc <- ggplot(mapDeathPcts.df.current, aes(x=long, y=lat, group=group, fill=covid_death_pct)) +
-      scale_fill_gradientn("", colours=pcolors ,na.value = "white", limits = c(0.000000001,upper_limit) ) +
-      labs(title=paste("Covid 19 Deaths by County as Pct of County Population (",plot_date,")",sep = ""), x="",y="") +
-      geom_polygon() + coord_map() + borders("state")
-    print(pc)
-    dev.off()
-    # mapDeathPcts.df.current <- NULL
-    # mapDeathPcts.df <- NULL
   }
-}
