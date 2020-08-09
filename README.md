@@ -1,6 +1,6 @@
 # covid19
 
-Analysis Covid-19 data
+Analysis of Covid-19 data
 
 **AnimateGIF**
 
